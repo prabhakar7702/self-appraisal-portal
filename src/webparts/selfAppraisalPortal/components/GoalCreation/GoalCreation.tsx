@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { DefaultButton, Icon, IconButton, PrimaryButton } from '@fluentui/react';
-import { MESSAGES } from '../../constants/Messages';
+import { DefaultButton, IconButton, MessageBar, MessageBarType, PrimaryButton, TextField } from '@fluentui/react';
 import { useAppContext } from '../../context/AppContext';
 import { IEmployeeGoal } from '../../models/Goal';
 import { ValidationHelper } from '../../utils/ValidationHelper';
@@ -8,84 +7,96 @@ import styles from './GoalCreation.module.scss';
 import { IGoalCreationProps } from './IGoalCreationProps';
 
 export const GoalCreation: React.FC<IGoalCreationProps> = React.memo((props) => {
-  const { mappings, goals, updateGoal } = useAppContext();
-  const hasAllGoals = ValidationHelper.hasGoalForEveryKra(mappings, goals);
-  const getPriorityClass = React.useCallback((priority: string): string => {
-    if (priority === 'High') {
-      return styles.high;
-    }
-
-    if (priority === 'Low') {
-      return styles.low;
-    }
-
-    return styles.medium;
-  }, []);
+  const { appraisalResponse, mappings, goals, updateGoal, removeGoal, isReadOnly } = useAppContext();
+  const [message, setMessage] = React.useState<string>('');
 
   const addGoal = React.useCallback((mappingId: number): void => {
+    const id = -Date.now();
     const goal: IEmployeeGoal = {
-      id: Date.now(),
-      appraisalHeaderId: 501,
+      id: id,
+      appraisalResponseId: appraisalResponse ? appraisalResponse.id : 0,
       designationKraId: mappingId,
-      goalTitle: 'New measurable goal',
-      goalDescription: 'Describe the goal and success criteria.',
+      kraId: mappingId,
+      goal: '',
+      description: '',
+      goalTitle: '',
+      goalDescription: '',
       priority: 'Medium',
-      targetOutcome: 'Define the expected measurable outcome.',
-      progress: 0,
-      isDeleted: false
+      progress: 0
     };
     updateGoal(goal);
+  }, [appraisalResponse, updateGoal]);
+
+  const onUpdateGoal = React.useCallback((goal: IEmployeeGoal, goalTitle: string, goalDescription: string): void => {
+    updateGoal({
+      ...goal,
+      goal: goalTitle,
+      description: goalDescription,
+      goalTitle: goalTitle,
+      goalDescription: goalDescription
+    });
   }, [updateGoal]);
+
+  const onDelete = React.useCallback(async (goal: IEmployeeGoal): Promise<void> => {
+    if (goal.id > 0) {
+      await removeGoal(goal.id);
+    } else {
+      updateGoal({ ...goal, isDeleted: true });
+    }
+    setMessage('Goal removed.');
+  }, [removeGoal, updateGoal]);
 
   return (
     <section className={styles.goalCreation}>
-      <div className={styles.headerRow}>
+      <header className={styles.headerRow}>
         <div>
           <h1>Create Goals Under KRAs</h1>
-          <p>Add meaningful goals under each KRA. At least one goal is required under every KRA.</p>
+          <p>Add at least one goal under each KRA before submission.</p>
         </div>
-        <PrimaryButton text="Continue to Form" iconProps={{ iconName: 'Forward' }} onClick={props.onContinue} disabled={!hasAllGoals} />
-      </div>
-      <div className={styles.info}><Icon iconName="Info" />{MESSAGES.GoalRequirement}</div>
-      {mappings.map(mapping => {
-        const kraGoals = goals.filter(goal => goal.designationKraId === mapping.id);
+        <PrimaryButton text="Continue to Self Appraisal" onClick={props.onContinue} />
+      </header>
+
+      {!ValidationHelper.hasGoalForEveryKra(mappings, goals.filter(goal => !goal.isDeleted)) && (
+        <MessageBar messageBarType={MessageBarType.warning}>At least one goal is required under every KRA before submission.</MessageBar>
+      )}
+      {message && <MessageBar messageBarType={MessageBarType.success} onDismiss={() => setMessage('')}>{message}</MessageBar>}
+
+      {mappings.map((mapping, index) => {
+        const kraGoals = goals.filter(goal => (goal.designationKraId || goal.kraId) === mapping.id && !goal.isDeleted);
         return (
           <article className={styles.kraCard} key={mapping.id}>
             <header className={styles.kraHeader}>
-              <div>
-                <h2>{mapping.displayOrder}. {mapping.kra.name} <span>{mapping.weightage}%</span></h2>
-                <p>{mapping.kra.description}</p>
-              </div>
-              <div className={styles.kraActions}>
-                <strong>Goals Added: {kraGoals.length}</strong>
-                <DefaultButton text="Add Goal" iconProps={{ iconName: 'Add' }} onClick={() => addGoal(mapping.id)} />
-              </div>
+              <strong>{index + 1}. {mapping.kra.title} ({mapping.weightage}%)</strong>
+              <DefaultButton text="Add Goal" onClick={() => addGoal(mapping.id)} disabled={isReadOnly} />
             </header>
-            <div className={styles.goalTable} role="table" aria-label={`${mapping.kra.name} goals`}>
-              <div className={styles.tableHeader} role="row">
-                <span>#</span><span>Goal Title</span><span>Goal Description</span><span>Priority</span><span>Target / Expected Outcome</span><span>Actions</span>
-              </div>
-              {kraGoals.map((goal, index) => (
-                <div className={styles.tableRow} role="row" key={goal.id}>
-                  <span>{index + 1}</span>
-                  <span>{goal.goalTitle}</span>
-                  <span>{goal.goalDescription}</span>
-                  <span><mark className={getPriorityClass(goal.priority)}>{goal.priority}</mark></span>
-                  <span>{goal.targetOutcome}</span>
-                  <span className={styles.actionIcons}>
-                    <IconButton ariaLabel="Edit goal" iconProps={{ iconName: 'Edit' }} />
-                    <IconButton ariaLabel="Delete goal" iconProps={{ iconName: 'Delete' }} />
-                  </span>
+            <div className={styles.goalList}>
+              {kraGoals.map((goal, goalIndex) => (
+                <div className={styles.goalItem} key={goal.id}>
+                  <div className={styles.goalNum}>{goalIndex + 1}</div>
+                  <TextField
+                    label="Goal Title"
+                    value={goal.goalTitle || goal.goal}
+                    onChange={(_, value) => onUpdateGoal(goal, value || '', goal.goalDescription || goal.description || '')}
+                    disabled={isReadOnly}
+                    required={true}
+                  />
+                  <TextField
+                    label="Goal Description"
+                    value={goal.goalDescription || goal.description}
+                    multiline={true}
+                    rows={2}
+                    onChange={(_, value) => onUpdateGoal(goal, goal.goalTitle || goal.goal, value || '')}
+                    disabled={isReadOnly}
+                  />
+                  <IconButton ariaLabel="Delete goal" iconProps={{ iconName: 'Delete' }} onClick={() => onDelete(goal)} disabled={isReadOnly} />
                 </div>
               ))}
+              {kraGoals.length === 0 && <div className={styles.emptyGoal}>No goals yet for this KRA.</div>}
             </div>
           </article>
         );
       })}
-      <div className={hasAllGoals ? styles.success : styles.warning}>
-        <Icon iconName={hasAllGoals ? 'Completed' : 'Warning'} />
-        {hasAllGoals ? MESSAGES.GoalSuccess : MESSAGES.GoalRequirement}
-      </div>
     </section>
   );
 });
+

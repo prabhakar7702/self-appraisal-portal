@@ -1,8 +1,8 @@
 export interface IKRA {
   id: number;
-  name: string;
-  description: string;
-  isActive: boolean;
+  title: string;
+  designationId: number;
+  weightage: number;
 }
 
 export interface IDesignationKRAMapping {
@@ -12,6 +12,4 @@ export interface IDesignationKRAMapping {
   kra: IKRA;
   weightage: number;
   displayOrder: number;
-  isActive: boolean;
 }
-

@@ -44,22 +44,19 @@
 @media (max-width: 860px) {
   .navigation {
     border-bottom: 1px solid #dfe5f2;
-    border-right: 0;
-    flex-direction: row;
+    border-right: 1px solid #dfe5f2;
+    flex-direction: column;
     min-height: auto;
-    overflow-x: auto;
     padding: 12px;
-    width: auto;
+    width: 100%;
   }
 
   .navButton,
   .activeNavButton {
-    flex: 0 0 auto;
-    min-width: 140px;
+    min-width: 0;
   }
 
   .help {
     display: none;
   }
 }
-

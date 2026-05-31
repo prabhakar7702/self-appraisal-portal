@@ -225,7 +225,7 @@ export const LISTS = {
   KRAs: "KRAs",
   DesignationKRAMapping: "DesignationKRAMapping",
   EmployeeGoals: "EmployeeGoals",
-  AppraisalHeaders: "AppraisalHeaders",
+  AppraisalResponses: "AppraisalResponses",
   AppraisalGoalResponses: "AppraisalGoalResponses",
   AppraisalQAResponses: "AppraisalQAResponses",
   AppraisalCycles: "AppraisalCycles"

@@ -42,7 +42,7 @@ All data must be loaded dynamically from SharePoint:
 * EmployeeData
 * KRAs
 * EmployeeGoals
-* AppraisalHeaders
+* AppraisalResponses
 * AppraisalGoalResponses
 * AppraisalQAResponses
 * AppraisalCycles

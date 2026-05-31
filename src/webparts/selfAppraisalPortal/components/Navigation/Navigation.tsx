@@ -6,10 +6,8 @@ import { INavigationProps } from './INavigationProps';
 
 const navItems = [
   { route: ROUTES.Home, label: 'Home', iconName: 'Home' },
-  { route: ROUTES.CreateGoals, label: 'Create Goals', iconName: 'CircleAddition' },
-  { route: ROUTES.AppraisalForm, label: 'Self Appraisal Form', iconName: 'Completed' },
-  { route: ROUTES.AdditionalQuestions, label: 'Additional Questions', iconName: 'Questionnaire' },
-  { route: ROUTES.UploadDocuments, label: 'Upload Documents', iconName: 'PageAdd' },
+  { route: ROUTES.CreateGoals, label: 'Create Goals', iconName: 'EditCreate' },
+  { route: ROUTES.AppraisalForm, label: 'Self Appraisal', iconName: 'Completed' }
 ];
 
 export const Navigation: React.FC<INavigationProps> = React.memo((props) => (
@@ -32,4 +30,3 @@ export const Navigation: React.FC<INavigationProps> = React.memo((props) => (
     </div> */}
   </nav>
 ));
-

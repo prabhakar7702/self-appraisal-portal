@@ -2,21 +2,25 @@ export type GoalPriority = 'High' | 'Medium' | 'Low';
 
 export interface IEmployeeGoal {
   id: number;
-  appraisalHeaderId: number;
-  designationKraId: number;
+  goal: string;
+  description: string;
+  priority: GoalPriority;
+  startDate?: string;
+  dueDate?: string;
+  kraId: number;
+  progress: number;
+  appraisalResponseId?: number;
+  designationKraId?: number;
   goalTitle: string;
   goalDescription: string;
-  priority: GoalPriority;
-  targetOutcome: string;
-  progress: number;
-  isDeleted: boolean;
+  targetOutcome?: string;
+  isDeleted?: boolean;
 }
 
 export interface IGoalResponse {
   id: number;
-  appraisalHeaderId: number;
+  appraisalResponseId: number;
   goalId: number;
   selfRating: number;
   selfComments: string;
 }
-

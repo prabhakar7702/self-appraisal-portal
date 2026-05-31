@@ -5,8 +5,8 @@ export interface IQuestion {
 
 export interface IQAResponse {
   id: number;
-  appraisalHeaderId: number;
+  appraisalResponseId: number;
   questionId: number;
+  question?: string;
   answer: string;
 }
-

@@ -9,6 +9,9 @@ export const MESSAGES = {
   DraftSaved: 'Draft saved successfully.',
   Submitted: 'Self appraisal submitted successfully.',
   CompleteRequired: 'Please complete all required goals, ratings, comments, and additional questions before submitting.',
-  UploadOptional: 'Supporting PDF documents are optional.'
+  UploadOptional: 'Supporting PDF documents are optional.',
+  LoadFailed: 'We could not load appraisal data from SharePoint. Please refresh and try again.',
+  SaveFailed: 'We could not save your changes. Please retry in a moment.',
+  AccessDenied: 'You do not have permission to perform this action.',
+  NetworkIssue: 'We are unable to reach SharePoint right now. Check your connection and try again.'
 };
-

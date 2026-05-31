@@ -4,9 +4,9 @@ export const LISTS = {
   KRAs: 'KRAs',
   DesignationKRAMapping: 'DesignationKRAMapping',
   AppraisalCycles: 'AppraisalCycles',
-  AppraisalHeader: 'AppraisalHeader',
+  AppraisalResponses: 'AppraisalResponses',
   EmployeeGoals: 'EmployeeGoals',
   AppraisalGoalResponses: 'AppraisalGoalResponses',
-  AppraisalQAResponses: 'AppraisalQAResponses'
+  AppraisalQAResponses: 'AppraisalQAResponses',
+  AppraisalQuestions: 'AppraisalQuestions'
 };
-

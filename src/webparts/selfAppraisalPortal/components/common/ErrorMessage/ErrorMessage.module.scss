@@ -1,4 +1,25 @@
-.message {
+.wrap {
   width: 100%;
 }
 
+.row {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+}
+
+.icon {
+  color: #b42318;
+  font-size: 20px;
+}
+
+.title {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.hint {
+  color: #6b7280;
+  display: block;
+  margin-top: 6px;
+}

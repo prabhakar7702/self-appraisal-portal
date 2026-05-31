@@ -1,4 +1,16 @@
-.message {
-  margin-bottom: 18px;
+.floatingMessage {
+  bottom: 16px;
+  max-width: 480px;
+  position: fixed;
+  right: 16px;
+  width: calc(100% - 32px);
+  z-index: 1200;
 }
 
+@media (max-width: 768px) {
+  .floatingMessage {
+    bottom: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+  }
+}

@@ -9,7 +9,7 @@ export interface IKraRating {
 
 export class RatingHelper {
   public static getKraRating(mappingId: number, goals: IEmployeeGoal[], responses: IGoalResponse[]): number {
-    const kraGoals = goals.filter(goal => goal.designationKraId === mappingId && !goal.isDeleted);
+    const kraGoals = goals.filter(goal => (goal.designationKraId || goal.kraId) === mappingId && !goal.isDeleted);
     if (kraGoals.length === 0) {
       return 0;
     }
@@ -40,4 +40,3 @@ export class RatingHelper {
     return Math.round((weightedTotal / 100) * 10) / 10;
   }
 }
-

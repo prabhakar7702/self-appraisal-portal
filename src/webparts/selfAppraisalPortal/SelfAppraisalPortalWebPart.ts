@@ -7,6 +7,7 @@ import {
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
+import { SPHttpClient } from '@microsoft/sp-http';
 
 import * as strings from 'SelfAppraisalPortalWebPartStrings';
 import SelfAppraisalPortal from './components/SelfAppraisalPortal/SelfAppraisalPortal';
@@ -29,7 +30,10 @@ export default class SelfAppraisalPortalWebPart extends BaseClientSideWebPart<IS
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
+        userEmail: this.context.pageContext.user.email,
+        webAbsoluteUrl: this.context.pageContext.web.absoluteUrl,
+        spHttpClient: this.context.spHttpClient as SPHttpClient
       }
     );
 

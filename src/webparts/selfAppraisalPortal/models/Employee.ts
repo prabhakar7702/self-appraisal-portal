@@ -2,15 +2,18 @@ export type UserRole = 'Employee' | 'Manager' | 'HRAdmin';
 
 export interface IEmployee {
   id: number;
-  employeeId: string;
-  employeeName: string;
+  empId: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  designationId: number;
-  designationTitle: string;
+  designation: string;
   department: string;
+  businessUnit: string;
   reportingManager: string;
-  projectManager: string;
+  dateOfJoining: string;
   role: UserRole;
-  isActive: boolean;
+  employeeName: string;
+  designationTitle: string;
+  employeeId: string;
+  designationId: number;
 }
-

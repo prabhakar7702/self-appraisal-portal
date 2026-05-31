@@ -6,7 +6,7 @@ import { IQAResponse } from '../models/Question';
 
 export class ValidationHelper {
   public static hasGoalForEveryKra(mappings: IDesignationKRAMapping[], goals: IEmployeeGoal[]): boolean {
-    return mappings.every(mapping => goals.some(goal => goal.designationKraId === mapping.id && !goal.isDeleted));
+    return mappings.every(mapping => goals.some(goal => (goal.designationKraId || goal.kraId) === mapping.id && !goal.isDeleted));
   }
 
   public static canSubmit(mappings: IDesignationKRAMapping[], goals: IEmployeeGoal[], responses: IGoalResponse[], qaResponses: IQAResponse[]): boolean {
