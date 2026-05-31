@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "self-appraisal-portal-client-side-solution",
+    "id": "32f66eb8-9012-401d-b6d1-406f718cedaf",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.20.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "self-appraisal-portal description"
+      },
+      "longDescription": {
+        "default": "self-appraisal-portal description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "self-appraisal-portal Feature",
+        "description": "The feature that activates elements of the self-appraisal-portal solution.",
+        "id": "a07b09ce-e927-41b1-a5da-e290a722490a",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/self-appraisal-portal.sppkg"
+  }
+}

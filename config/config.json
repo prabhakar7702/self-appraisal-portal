@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "self-appraisal-portal-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/selfAppraisalPortal/SelfAppraisalPortalWebPart.js",
+          "manifest": "./src/webparts/selfAppraisalPortal/SelfAppraisalPortalWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "SelfAppraisalPortalWebPartStrings": "lib/webparts/selfAppraisalPortal/loc/{locale}.js"
+  }
+}
