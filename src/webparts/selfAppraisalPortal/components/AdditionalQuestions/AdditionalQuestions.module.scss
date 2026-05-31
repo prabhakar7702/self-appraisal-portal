@@ -1,0 +1,47 @@
+.questions {
+  display: grid;
+  gap: 20px;
+  max-width: 1120px;
+}
+
+.headerRow {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.headerRow h1 {
+  font-size: 26px;
+  margin: 0 0 8px;
+}
+
+.headerRow p {
+  font-weight: 700;
+  margin: 0;
+}
+
+.questionList {
+  border: 1px solid #dfe5f2;
+  border-radius: 8px;
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+}
+
+.questionRow {
+  display: grid;
+  gap: 10px;
+}
+
+.questionRow label {
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .headerRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+

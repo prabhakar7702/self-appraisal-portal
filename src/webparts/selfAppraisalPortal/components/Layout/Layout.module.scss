@@ -1,0 +1,66 @@
+.shell {
+  background: #ffffff;
+  color: #06144d;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+.header {
+  align-items: center;
+  border-bottom: 1px solid #dfe5f2;
+  display: flex;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 24px;
+}
+
+.brand,
+.user {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.brand {
+  font-size: 17px;
+}
+
+.logo {
+  align-items: center;
+  color: #4318ff;
+  display: flex;
+  font-size: 26px;
+}
+
+.user {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.body {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 32px 36px;
+}
+
+@media (max-width: 860px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
+  }
+
+  .body {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 20px 16px 28px;
+  }
+}
+

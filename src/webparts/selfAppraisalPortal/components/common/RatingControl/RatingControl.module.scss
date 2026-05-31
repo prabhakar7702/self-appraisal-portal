@@ -1,0 +1,20 @@
+.rating {
+  align-items: center;
+  display: flex;
+  min-width: 150px;
+}
+
+.star,
+.starActive {
+  height: 28px;
+  width: 28px;
+}
+
+.star {
+  color: #9aa6c3;
+}
+
+.starActive {
+  color: #4318ff;
+}
+

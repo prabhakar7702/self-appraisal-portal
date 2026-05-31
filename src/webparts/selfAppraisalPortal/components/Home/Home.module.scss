@@ -1,0 +1,96 @@
+.home {
+  max-width: 900px;
+}
+
+.home h1 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+
+.home > p {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 32px;
+}
+
+.cards {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 22px;
+}
+
+.actionCard {
+  border: 1px solid #dfe5f2;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(6, 20, 77, 0.06);
+  display: flex;
+  gap: 18px;
+  min-height: 160px;
+  padding: 24px;
+}
+
+.actionCard h2 {
+  font-size: 20px;
+  margin: 0 0 10px;
+}
+
+.actionCard p {
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.iconBox {
+  align-items: center;
+  background: #ebe5ff;
+  border-radius: 8px;
+  color: #4318ff;
+  display: flex;
+  flex: 0 0 54px;
+  font-size: 30px;
+  height: 54px;
+  justify-content: center;
+}
+
+.badge {
+  background: #dff7e7;
+  border-radius: 6px;
+  color: #087b34;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+}
+
+.progressLine {
+  display: flex;
+  font-size: 13px;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.track {
+  background: #e8ebf3;
+  border-radius: 999px;
+  height: 8px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.track span {
+  background: #4318ff;
+  display: block;
+  height: 100%;
+  width: 40%;
+}
+
+@media (max-width: 760px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .actionCard {
+    flex-direction: column;
+  }
+}
+

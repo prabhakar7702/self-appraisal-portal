@@ -20,7 +20,7 @@
     "group": { "default": "Advanced" },
     "title": { "default": "SelfAppraisalPortal" },
     "description": { "default": "SelfAppraisalPortal description" },
-    "officeFabricIconFontName": "Page",
+    "officeFabricIconFontName": "Feedback",
     "properties": {
       "description": "SelfAppraisalPortal"
     }

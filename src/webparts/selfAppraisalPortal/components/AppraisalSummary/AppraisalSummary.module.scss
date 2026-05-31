@@ -1,0 +1,92 @@
+.panel,
+.compactPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 340px;
+}
+
+.compactPanel {
+  width: 100%;
+}
+
+.card {
+  border: 1px solid #dfe5f2;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(6, 20, 77, 0.06);
+  padding: 22px;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.card p {
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.badge {
+  background: #dff7e7;
+  border-radius: 6px;
+  color: #087b34;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+}
+
+.progressLabel {
+  display: flex;
+  font-size: 13px;
+  justify-content: space-between;
+  margin-top: 28px;
+}
+
+.track {
+  background: #e8ebf3;
+  border-radius: 999px;
+  height: 7px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.bar {
+  background: #4318ff;
+  display: block;
+  height: 100%;
+  width: 40%;
+}
+
+.metrics {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr auto;
+  margin: 22px 0;
+}
+
+.metrics dt,
+.metrics dd {
+  font-weight: 700;
+  margin: 0;
+}
+
+.finalRating {
+  border-top: 1px solid #dfe5f2;
+  display: grid;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+.finalRating strong {
+  color: #4318ff;
+  font-size: 24px;
+}
+
+@media (max-width: 1120px) {
+  .panel {
+    width: 100%;
+  }
+}
+
