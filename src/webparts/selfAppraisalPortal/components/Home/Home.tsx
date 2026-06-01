@@ -42,7 +42,7 @@ export const Home: React.FC<IHomeProps> = React.memo((props) => {
         {isReadOnly ? (
           <DefaultButton text={actionLabel} onClick={() => props.onNavigate(ROUTES.AppraisalForm)} />
         ) : (
-          <PrimaryButton text={actionLabel} onClick={() => props.onNavigate(ROUTES.CreateGoals)} disabled={!isCycleOpen} />
+          <PrimaryButton text={actionLabel} onClick={() => props.onNavigate(ROUTES.AppraisalForm)} disabled={!isCycleOpen} />
         )}
       </article>
     </section>

@@ -58,11 +58,31 @@ export const AppProvider: React.FC<IAppProviderProps> = React.memo((props) => {
         const loadedCycle = await services.cycleService.getActiveCycle();
         const loadedResponse = await services.appraisalService.getResponse(loadedEmployee.id, loadedCycle.id);
         const loadedMappings = await services.goalService.getDesignationKras(loadedEmployee.designation);
-        const loadedGoals = loadedResponse ? await services.goalService.getGoals(loadedResponse.id) : [];
+        let loadedGoals = loadedResponse ? await services.goalService.getGoals(loadedResponse.id) : [];
         const loadedResponses = loadedResponse ? await services.appraisalService.getGoalResponses(loadedResponse.id) : [];
         const loadedQuestions = await services.questionService.getQuestions();
         const loadedQaResponses = loadedResponse ? await services.appraisalService.getQaResponses(loadedResponse.id) : [];
         const loadedDocuments = loadedResponse ? await services.documentService.getDocuments(loadedResponse.id) : [];
+
+        const orgKra = loadedMappings.filter(mapping => mapping.kra.title.toLowerCase() === 'org or coe contributions')[0];
+        if (orgKra) {
+          const mandatoryExists = loadedGoals.some(goal => (goal.goalTitle || goal.goal).toLowerCase().indexOf('improving presentation skill') >= 0 && (goal.designationKraId || goal.kraId) === orgKra.id && !goal.isDeleted);
+          if (!mandatoryExists) {
+            loadedGoals = loadedGoals.concat({
+              id: -9991,
+              appraisalResponseId: loadedResponse ? loadedResponse.id : 0,
+              designationKraId: orgKra.id,
+              kraId: orgKra.id,
+              goal: 'Improving Presentation Skill',
+              description: 'Mandatory Organization Goal',
+              goalTitle: 'Improving Presentation Skill',
+              goalDescription: 'Mandatory Organization Goal',
+              priority: 'Medium',
+              progress: 0,
+              isMandatory: true
+            });
+          }
+        }
 
         if (isMounted) {
           setEmployee(loadedEmployee);
@@ -110,49 +130,31 @@ export const AppProvider: React.FC<IAppProviderProps> = React.memo((props) => {
 
   const updateResponse = React.useCallback((response: IGoalResponse): void => {
     setResponses(previous => {
-      const exists = previous.some(item => item.id === response.id);
-      return exists ? previous.map(item => item.id === response.id ? response : item) : previous.concat(response);
+      const existsById = response.id > 0 && previous.some(item => item.id === response.id);
+      const existsByGoal = previous.some(item => item.goalId === response.goalId);
+      if (existsById) {
+        return previous.map(item => item.id === response.id ? response : item);
+      }
+      if (existsByGoal) {
+        return previous.map(item => item.goalId === response.goalId ? { ...item, ...response } : item);
+      }
+      return previous.concat(response);
     });
   }, []);
 
   const updateQaResponse = React.useCallback((response: IQAResponse): void => {
     setQaResponses(previous => {
-      const exists = previous.some(item => item.id === response.id);
-      return exists ? previous.map(item => item.id === response.id ? response : item) : previous.concat(response);
+      const existsById = response.id > 0 && previous.some(item => item.id === response.id);
+      const existsByQuestion = previous.some(item => item.questionId === response.questionId);
+      if (existsById) {
+        return previous.map(item => item.id === response.id ? response : item);
+      }
+      if (existsByQuestion) {
+        return previous.map(item => item.questionId === response.questionId ? { ...item, ...response } : item);
+      }
+      return previous.concat(response);
     });
   }, []);
-
-  const addDocument = React.useCallback(async (file: File): Promise<string> => {
-    if (!employee || !appraisalResponse || !cycle) {
-      return 'Unable to attach this document right now.';
-    }
-
-    const validationMessage = ValidationHelper.validatePdf(file);
-    if (validationMessage) {
-      return validationMessage;
-    }
-
-    const document: IAppraisalDocument = {
-      id: 0,
-      fileLeafRef: file.name,
-      employeeId: employee.id,
-      appraisalResponseId: appraisalResponse.id,
-      cycleId: cycle.id,
-      sizeKb: Math.round(file.size / 1024),
-      created: new Date().toISOString()
-    };
-    const folder = `${new URL(props.webAbsoluteUrl).pathname}/AppraisalDocuments/${cycle.cycle}/${employee.empId}`;
-    const saved = await services.documentService.addDocument(document, file, folder);
-    setDocuments(previous => previous.concat(saved));
-    return '';
-  }, [appraisalResponse, cycle, employee, props.webAbsoluteUrl, services.documentService]);
-
-  const removeDocument = React.useCallback(async (documentId: number): Promise<string> => {
-    const document = documents.filter(item => item.id === documentId)[0];
-    await services.documentService.deleteDocument(documentId, document && document.fileServerRelativeUrl);
-    setDocuments(previous => previous.filter(item => item.id !== documentId));
-    return 'Document removed successfully.';
-  }, [documents, services.documentService]);
 
   const ensureResponse = React.useCallback(async (targetStatus: 'Draft' | 'Submitted'): Promise<IAppraisalResponse | undefined> => {
     if (appraisalResponse) {
@@ -165,6 +167,43 @@ export const AppProvider: React.FC<IAppProviderProps> = React.memo((props) => {
     setAppraisalResponse(createdResponse);
     return createdResponse;
   }, [appraisalResponse, cycle, employee, services.appraisalService]);
+
+  const addDocument = React.useCallback(async (file: File): Promise<string> => {
+    if (!employee || !cycle) {
+      return 'Unable to attach this document right now.';
+    }
+
+    const validationMessage = ValidationHelper.validatePdf(file);
+    if (validationMessage) {
+      return validationMessage;
+    }
+
+    const responseHeader = await ensureResponse('Draft');
+    if (!responseHeader) {
+      return MESSAGES.SaveFailed;
+    }
+
+    const document: IAppraisalDocument = {
+      id: 0,
+      fileLeafRef: file.name,
+      employeeId: employee.id,
+      appraisalResponseId: responseHeader.id,
+      cycleId: cycle.id,
+      sizeKb: Math.round(file.size / 1024),
+      created: new Date().toISOString()
+    };
+    const folder = `${new URL(props.webAbsoluteUrl).pathname}/AppraisalDocuments/${cycle.cycle}/${employee.empId}`;
+    const saved = await services.documentService.addDocument(document, file, folder);
+    setDocuments(previous => previous.concat(saved));
+    return '';
+  }, [cycle, employee, ensureResponse, props.webAbsoluteUrl, services.documentService]);
+
+  const removeDocument = React.useCallback(async (documentId: number): Promise<string> => {
+    const document = documents.filter(item => item.id === documentId)[0];
+    await services.documentService.deleteDocument(documentId, document && document.fileServerRelativeUrl);
+    setDocuments(previous => previous.filter(item => item.id !== documentId));
+    return 'Document removed successfully.';
+  }, [documents, services.documentService]);
 
   const persistChanges = React.useCallback(async (): Promise<string> => {
     const responseHeader = await ensureResponse('Draft');

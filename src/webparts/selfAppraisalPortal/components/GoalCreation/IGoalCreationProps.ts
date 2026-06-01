@@ -1,4 +1,1 @@
-export interface IGoalCreationProps {
-  onContinue: () => void;
-}
-
+export interface IGoalCreationProps {}

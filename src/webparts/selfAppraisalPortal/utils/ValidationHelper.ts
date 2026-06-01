@@ -9,8 +9,12 @@ export class ValidationHelper {
     return mappings.every(mapping => goals.some(goal => (goal.designationKraId || goal.kraId) === mapping.id && !goal.isDeleted));
   }
 
+  public static hasMinimumGoalsForEveryKra(mappings: IDesignationKRAMapping[], goals: IEmployeeGoal[], minimum: number): boolean {
+    return mappings.every(mapping => goals.filter(goal => (goal.designationKraId || goal.kraId) === mapping.id && !goal.isDeleted).length >= minimum);
+  }
+
   public static canSubmit(mappings: IDesignationKRAMapping[], goals: IEmployeeGoal[], responses: IGoalResponse[], qaResponses: IQAResponse[]): boolean {
-    const allKrasHaveGoals = this.hasGoalForEveryKra(mappings, goals);
+    const allKrasHaveGoals = this.hasMinimumGoalsForEveryKra(mappings, goals, 3);
     const activeGoals = goals.filter(goal => !goal.isDeleted);
     const goalsComplete = activeGoals.every(goal => {
       const response = responses.filter(item => item.goalId === goal.id)[0];

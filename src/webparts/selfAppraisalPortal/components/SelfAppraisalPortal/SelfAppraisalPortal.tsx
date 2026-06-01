@@ -35,10 +35,10 @@ const AppShell: React.FC<{ userDisplayName: string }> = React.memo((props) => {
       return <EmptyState iconName="Calendar" title={MESSAGES.WindowClosedTitle} message={`${MESSAGES.WindowClosedBody} You can access the self appraisal only between ${dateRange}.`} />;
     }
     if (activeRoute === ROUTES.CreateGoals) {
-      return <GoalCreation onContinue={() => setActiveRoute(ROUTES.AppraisalForm)} />;
+      return <GoalCreation />;
     }
     if (activeRoute === ROUTES.AppraisalForm) {
-      return <SelfAppraisalForm onSaveMessage={setMessage} />;
+      return <SelfAppraisalForm onSaveMessage={setMessage} onGoToGoalCreation={() => setActiveRoute(ROUTES.CreateGoals)} />;
     }
     return <Home onNavigate={setActiveRoute} />;
   }, [activeRoute, cycle, employee, errorMessage, isCycleOpen, isLoading]);

@@ -1,75 +1,107 @@
-.goalCreation {
+.page {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
-.headerRow {
-  align-items: center;
+.header {
+  align-items: flex-start;
   display: flex;
   justify-content: space-between;
 }
 
-.headerRow h1 {
+.header h1 {
   margin: 0;
 }
 
-.headerRow p {
-  color: #5d6b8a;
+.header p {
+  color: #5c6b8a;
   margin: 4px 0 0;
 }
 
+.headerMeta {
+  display: grid;
+  gap: 8px;
+}
+
+.headerMeta span {
+  background: #f6f8ff;
+  border: 1px solid #dde4f4;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 10px 12px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.kraList {
+  display: grid;
+  gap: 10px;
+}
+
 .kraCard {
-  border: 1px solid #dce3f1;
+  border: 1px solid #dde4f4;
   border-radius: 8px;
   overflow: hidden;
 }
 
-.kraHeader {
+.kraHead {
   align-items: center;
-  background: #f6f8fc;
+  background: #f8faff;
   display: flex;
   justify-content: space-between;
-  padding: 12px 14px;
+  padding: 10px 12px;
 }
 
-.goalList {
+.table {
   display: grid;
-  gap: 0;
 }
 
-.goalItem {
-  align-items: end;
-  border-top: 1px solid #e6ecf6;
+.rowHead,
+.row {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1.4fr 1.6fr .8fr .8fr .8fr .8fr .7fr;
+  padding: 8px 12px;
+}
+
+.rowHead {
+  background: #fcfdff;
+  border-top: 1px solid #e8eef9;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.row {
+  border-top: 1px solid #edf2fb;
+  font-size: 12px;
+}
+
+.lock {
+  color: #f59e0b;
+}
+
+.editor {
   display: grid;
   gap: 10px;
-  grid-template-columns: 36px 1.2fr 1.6fr auto;
-  padding: 10px 14px;
 }
 
-.goalNum {
-  color: #677697;
-  font-weight: 700;
-  padding-top: 32px;
-}
-
-.emptyGoal {
-  color: #66748f;
-  padding: 14px;
-}
-
-@media (max-width: 900px) {
-  .headerRow {
-    align-items: stretch;
+@media (max-width: 1024px) {
+  .header {
     flex-direction: column;
     gap: 10px;
   }
 
-  .goalItem {
-    grid-template-columns: 1fr;
+  .rowHead {
+    display: none;
   }
 
-  .goalNum {
-    padding-top: 0;
+  .row {
+    grid-template-columns: 1fr;
   }
 }
 

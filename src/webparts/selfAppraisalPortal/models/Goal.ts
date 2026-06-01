@@ -15,6 +15,7 @@ export interface IEmployeeGoal {
   goalDescription: string;
   targetOutcome?: string;
   isDeleted?: boolean;
+  isMandatory?: boolean;
 }
 
 export interface IGoalResponse {

@@ -17,8 +17,19 @@ export const SelfAppraisalForm: React.FC<ISelfAppraisalFormProps> = React.memo((
   const [isDragOver, setIsDragOver] = React.useState<boolean>(false);
 
   const finalRating = React.useMemo(() => RatingHelper.getFinalRating(mappings, goals, responses), [goals, mappings, responses]);
-  const goalsRated = React.useMemo(() => responses.filter(response => response.selfRating > 0).length, [responses]);
-  const completion = React.useMemo(() => goals.length > 0 ? Math.round((goalsRated / goals.length) * 100) : 0, [goals.length, goalsRated]);
+  const hasMinimumGoals = React.useMemo(() => ValidationHelper.hasMinimumGoalsForEveryKra(mappings, goals.filter(goal => !goal.isDeleted), 3), [goals, mappings]);
+  const completion = React.useMemo(() => {
+    const activeGoals = goals.filter(goal => !goal.isDeleted);
+    const goalsCompleted = activeGoals.filter(goal => {
+      const response = responses.filter(item => item.goalId === goal.id)[0];
+      return goal.progress >= 0 && !!response && response.selfRating > 0 && (response.selfComments || '').trim().length > 0;
+    }).length;
+    const questionsCompleted = qaResponses.filter(item => (item.answer || '').trim().length > 0).length;
+    const documentCompleted = documents.length > 0 ? 1 : 0;
+    const totalRequired = activeGoals.length + questions.length + 1;
+    const done = goalsCompleted + questionsCompleted + documentCompleted;
+    return totalRequired > 0 ? Math.round((done / totalRequired) * 100) : 0;
+  }, [documents.length, goals, qaResponses, questions.length, responses]);
 
   const getResponse = React.useCallback((goal: IEmployeeGoal): IGoalResponse => (
     responses.filter(response => response.goalId === goal.id)[0] || {
@@ -125,16 +136,21 @@ export const SelfAppraisalForm: React.FC<ISelfAppraisalFormProps> = React.memo((
                   <div className={styles.goalRow} key={goal.id}>
                     <div className={styles.goalTitle}>{goal.goalTitle}</div>
                     <div className={styles.goalWeight}><span className={styles.priority}>{goal.priority}</span></div>
-                    <div className={styles.goalProgress}><Dropdown options={progressOptions} selectedKey={goal.progress} onChange={(_, option) => onProgressChange(goal, option)} disabled={isReadOnly} /></div>
-                    <div className={styles.goalRating}><RatingControl value={response.selfRating} label={`${goal.goalTitle} self rating`} onChange={(value) => onRatingChange(goal, value)} readOnly={isReadOnly} /></div>
-                    <TextField className={styles.goalComment} multiline={true} rows={3} value={response.selfComments} onChange={(_, value) => onCommentChange(goal, value || '')} disabled={isReadOnly} />
+                    <div className={styles.goalProgress}><Dropdown options={progressOptions} selectedKey={goal.progress} onChange={(_, option) => onProgressChange(goal, option)} disabled={isReadOnly || !hasMinimumGoals} /></div>
+                    <div className={styles.goalRating}><RatingControl value={response.selfRating} label={`${goal.goalTitle} self rating`} onChange={(value) => onRatingChange(goal, value)} readOnly={isReadOnly || !hasMinimumGoals} /></div>
+                    <TextField className={styles.goalComment} multiline={true} rows={3} value={response.selfComments} onChange={(_, value) => onCommentChange(goal, value || '')} disabled={isReadOnly || !hasMinimumGoals} />
                   </div>
                 );
               })}
             </div>
           );
         })}
-        {!ValidationHelper.hasGoalForEveryKra(mappings, goals) && <MessageBar messageBarType={MessageBarType.warning}>At least one goal is required under every KRA before submission.</MessageBar>}
+        {!hasMinimumGoals && (
+          <MessageBar messageBarType={MessageBarType.warning}>
+            Please create at least 3 goals under each KRA before starting your appraisal.
+            <DefaultButton text="Go To Goal Creation" onClick={props.onGoToGoalCreation} />
+          </MessageBar>
+        )}
         <div className={styles.finalRow}>
           <strong>Final Self Rating (Based on Goal Weightage)</strong>
           <RatingControl value={Math.round(finalRating)} label="Final rating" readOnly={true} />
@@ -150,7 +166,7 @@ export const SelfAppraisalForm: React.FC<ISelfAppraisalFormProps> = React.memo((
             return (
               <div className={styles.questionRow} key={question.id}>
                 <label>{idx + 1}. {question.question}</label>
-                <TextField multiline={true} rows={1} value={response ? response.answer : ''} onChange={(_, value) => updateQaResponse({ id: response ? response.id : 0, appraisalResponseId: appraisalResponse ? appraisalResponse.id : 0, questionId: question.id, answer: value || '' })} disabled={isReadOnly} />
+                <TextField multiline={true} rows={1} value={response ? response.answer : ''} onChange={(_, value) => updateQaResponse({ id: response ? response.id : 0, appraisalResponseId: appraisalResponse ? appraisalResponse.id : 0, questionId: question.id, answer: value || '' })} disabled={isReadOnly || !hasMinimumGoals} />
               </div>
             );
           })}
@@ -164,7 +180,7 @@ export const SelfAppraisalForm: React.FC<ISelfAppraisalFormProps> = React.memo((
           <div className={styles.dropZone}>
             <Icon iconName="CloudUpload" />
             <span>Drag and drop PDF here</span>
-            <input id="pdfUpload" type="file" accept="application/pdf,.pdf" className={styles.hiddenInput} onChange={onUpload} disabled={isReadOnly} />
+            <input id="pdfUpload" type="file" accept="application/pdf,.pdf" className={styles.hiddenInput} onChange={onUpload} disabled={isReadOnly || !hasMinimumGoals} />
             <label
               htmlFor="pdfUpload"
               className={isDragOver ? `${styles.fileButton} ${styles.fileButtonActive}` : styles.fileButton}
@@ -205,8 +221,8 @@ export const SelfAppraisalForm: React.FC<ISelfAppraisalFormProps> = React.memo((
 
       <footer className={styles.footerActions}>
         {localMessage && <MessageBar className={styles.inlineAlert} messageBarType={localMessage === MESSAGES.Submitted || localMessage === MESSAGES.DraftSaved ? MessageBarType.success : MessageBarType.warning}>{localMessage}</MessageBar>}
-        <DefaultButton text="Save as Draft" iconProps={{ iconName: 'Save' }} onClick={onSave} disabled={!isCycleOpen || isReadOnly} />
-        <PrimaryButton text="Submit Self Appraisal" iconProps={{ iconName: 'Send' }} onClick={onSubmit} disabled={!isCycleOpen || isReadOnly || !ValidationHelper.canSubmit(mappings, goals, responses, qaResponses)} />
+        <DefaultButton text="Save as Draft" iconProps={{ iconName: 'Save' }} onClick={onSave} disabled={!isCycleOpen || isReadOnly || !hasMinimumGoals} />
+        <PrimaryButton text="Submit Self Appraisal" iconProps={{ iconName: 'Send' }} onClick={onSubmit} disabled={!isCycleOpen || isReadOnly || !hasMinimumGoals || !ValidationHelper.canSubmit(mappings, goals, responses, qaResponses)} />
       </footer>
     </section>
   );
